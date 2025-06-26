@@ -4,23 +4,25 @@ project(AlchemicalSymbols)
 set(CMAKE_CXX_STANDARD 17) 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#Find OpenGL
+# Find OpenGL and GLUT
+set(OpenGL_GL_PREFERENCE "GLVND")
 find_package(OpenGL REQUIRED)
-
-#Find GLUT
 find_package(GLUT REQUIRED)
 
-#Find FreeType
+# Find FreeType
 find_package(Freetype REQUIRED)
 
-#Include directories
-include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
+# Add executables
+add_executable(AlchemicalSymbols AlchemicalSymbols.cpp)
+add_executable(FontToGlut FontToGlut.cpp)
 
-#Add executable
-add_executable(AlchemicalSymbols main.cpp)
+# Shared include directories
+target_include_directories(AlchemicalSymbols PRIVATE ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
+target_include_directories(FontToGlut PRIVATE ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
 
-#Link libraries
+# Link libraries
 target_link_libraries(AlchemicalSymbols ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${FREETYPE_LIBRARIES})
+target_link_libraries(FontToGlut ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${FREETYPE_LIBRARIES})
 
-#Optionally copy font file to build directory
+# Optionally copy font file to build directory
 file(COPY "Symbola.ttf" DESTINATION ${CMAKE_BINARY_DIR})
