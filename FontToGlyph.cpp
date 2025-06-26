@@ -16,7 +16,7 @@ std::vector<unsigned int> parseCodepoints(const std::string& codepointStr) {
     while (std::getline(ss, item, ',')) {
         try {
             // Remove any leading/trailing whitespace
-            item.erase(0, item.find_first_not_of(" \t"));
+            item.erase(0, item.find_first_not_of(" \t"));\
             item.erase(item.find_last_not_of(" \t") + 1);
             // Convert hex string to unsigned int
             unsigned int codepoint = std::stoul(item, nullptr, 16);
@@ -105,6 +105,8 @@ int main(int argc, char* argv[]) {
     std::replace(headerGuard.begin(), headerGuard.end(), '.', '_');
     outFile << "#ifndef " << headerGuard << "\n";
     outFile << "#define " << headerGuard << "\n\n";
+    // outFile << "#include <ft2build.h>" << "\n";
+    // outFile << "#include FT_FREETYPE_H" << "\n\n";
     outFile << "// Glyph texture data generated for specified Unicode symbols\n";
     outFile << "// Font: " << fontPath << ", Size: 48 pixels\n";
     outFile << "// Codepoints: " << codepointStr << "\n\n";
@@ -133,11 +135,12 @@ int main(int argc, char* argv[]) {
         outFile << "\n};\n";
 
         // Write glyph metrics
+        outFile << std::dec; // Force decimal mode
         outFile << "static const int glyph_U" << std::hex << codepoint << "_width = " << std::dec << width << ";\n";
-        outFile << "static const int glyph_U" << std::hex << codepoint << "_height = " << height << ";\n";
-        outFile << "static const int glyph_U" << std::hex << codepoint << "_bearingX = " << slot->bitmap_left << ";\n";
-        outFile << "static const int glyph_U" << std::hex << codepoint << "_bearingY = " << slot->bitmap_top << ";\n";
-        outFile << "static const int glyph_U" << std::hex << codepoint << "_advance = " << (slot->advance.x >> 6) << ";\n\n";
+        outFile << "static const int glyph_U" << std::hex << codepoint << "_height = " << std::dec << height << ";\n";
+        outFile << "static const int glyph_U" << std::hex << codepoint << "_bearingX = " << std::dec << slot->bitmap_left << ";\n";
+        outFile << "static const int glyph_U" << std::hex << codepoint << "_bearingY = " << std::dec << slot->bitmap_top << ";\n";
+        outFile << "static const int glyph_U" << std::hex << codepoint << "_advance = " << std::dec << (slot->advance.x >> 6) << ";\n\n";
     }
 
     // Close header guard
