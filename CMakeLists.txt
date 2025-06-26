@@ -27,5 +27,12 @@ target_link_libraries(AlchemicalSymbols ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${
 target_link_libraries(FontToGlyph ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${FREETYPE_LIBRARIES})
 target_link_libraries(EmbeddedAlchemicalSymbols ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${FREETYPE_LIBRARIES})
 
-# Optionally copy font file to build directory
-file(COPY "Symbola.ttf" DESTINATION ${CMAKE_BINARY_DIR})
+# Copy font file to build directory if AlchemicalSymbols is build
+add_custom_target(copy_symbola_font
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_CURRENT_SOURCE_DIR}/Symbola.ttf"
+    "${CMAKE_BINARY_DIR}/Symbola.ttf"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Symbola.ttf"
+    COMMENT "Copying Symbola.ttf to build directory"
+)
+add_dependencies(AlchemicalSymbols copy_symbola_font)
